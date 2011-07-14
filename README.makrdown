@@ -1,0 +1,39 @@
+# url_locale
+
+This gem will automatically set your `I18n.locale` and add _content-language_ to your response header using Rack. The locale variable is parsed from the requested URL. If no locale can be detected then `I18n.default_locale` will be your fallback.
+
+## How the locale is detected
+
+The gem will look for `I18n.available_locales` in the following order:
+
+1. `request.host`
+2. `request.path`
+
+If a locale can't be detected, fallback will be `I18n.default_locale`
+
+### Examples
+
+    I18n.default_locale => :en
+    I18n.available_locales => [:sv, :pt]
+    
+    http://example.com                        => "en"
+    http://sv.example.com                     => "sv"
+    http://www.example.com/about              => "en" # fallback
+    http://www.example.com/pt/em              => "pt"
+    http://sv.example.com/om                  => "sv"
+    http://localhost:3000/om?i18n_locale=sv   => "sv"
+    http://fr.example.com/sur                 => "en" # fallback
+    http://example.com/fr/sur                 => "en" # fallback
+    http://sv.example.com/pt/em               => "sv" 
+    http://sv.mobile.example.com             => "sv"
+    http://modile.sv.example.com             => "en" # fallback
+
+## Rack
+
+Rack middleware parses the URL and sets the response header _content-language_ attribute accordingly. Since the header is passed on to the web server, inserting `<meta http-equiv="Content-Language" content="en"/>` in the response body will be superfluous. Please note that cached responses passing through Rack also will get the correct content-language header (can be tricky to configure the web server to this).
+
+## Copyright
+
+Copyright (c) 2011 Dan Byström. See LICENSE.txt for
+further details.
+
