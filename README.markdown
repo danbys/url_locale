@@ -1,10 +1,10 @@
 # url_locale
 
-Add _content-language_ to your response header using Rack. The locale variable is parsed from the requested URL or if no locale can be detected then `I18n.default_locale` will be your fallback.
+Add _content-language_ to the response header using Rack. The locale variable is parsed from request URL, if no locale can be detected then `I18n.default_locale` will be your fallback.
 
 ## Rack
 
-Rack middleware parses the URL and sets the response header _content-language_ attribute accordingly. Since the header is passed on to the web server, inserting `<meta http-equiv="Content-Language" content="en"/>` in the response body will be superfluous. Please note that cached responses passing through Rack also will get the correct content-language header (can be tricky to configure the web server to this).
+Rack middleware parses the URL and sets the response header _content-language_ attribute accordingly. Since the header is passed on to the web server, inserting `<meta http-equiv="Content-Language" content="en"/>` in the response body is superfluous. Please note that cached responses passing through Rack also will get the correct content-language header (can be tricky to configure the web server to do this).
 
 ## Detect URL locale
 
@@ -49,7 +49,56 @@ If a locale can't be detected, fallback will be `I18n.default_locale`
 5. (optional) Configure - Change to Host mode
 6. Add before filter in application to set locale
 
-### Rails 3 example
+### Rails 3.1 example
+
+    $ rake middleware RAILS_ENV=development
+    use UrlLocale::Middleware
+    use ActionDispatch::Static
+    use Rack::Lock
+    use #<ActiveSupport::Cache::Strategy::LocalCache::Middleware:0x101fefef0>
+    use Rack::Runtime
+    use Rack::MethodOverride
+    use Rails::Rack::Logger
+    use ActionDispatch::ShowExceptions
+    use ActionDispatch::RemoteIp
+    use Rack::Sendfile
+    use ActionDispatch::Reloader
+    use ActionDispatch::Callbacks
+    use ActiveRecord::ConnectionAdapters::ConnectionManagement
+    use ActiveRecord::QueryCache
+    use ActionDispatch::Cookies
+    use ActionDispatch::Session::CookieStore
+    use ActionDispatch::Flash
+    use ActionDispatch::ParamsParser
+    use ActionDispatch::Head
+    use Rack::ConditionalGet
+    use Rack::ETag
+    use ActionDispatch::BestStandardsSupport
+    run Learning::Application.routes
+    
+    $ rake middleware RAILS_ENV=production
+    use Rack::Cache
+    use Rack::Lock
+    use #<ActiveSupport::Cache::Strategy::LocalCache::Middleware:0x101feeb68>
+    use Rack::Runtime
+    use Rack::MethodOverride
+    use Rails::Rack::Logger
+    use ActionDispatch::ShowExceptions
+    use ActionDispatch::RemoteIp
+    use Rack::Sendfile
+    use ActionDispatch::Callbacks
+    use ActiveRecord::ConnectionAdapters::ConnectionManagement
+    use ActiveRecord::QueryCache
+    use ActionDispatch::Cookies
+    use ActionDispatch::Session::CookieStore
+    use ActionDispatch::Flash
+    use ActionDispatch::ParamsParser
+    use ActionDispatch::Head
+    use Rack::ConditionalGet
+    use Rack::ETag
+    use ActionDispatch::BestStandardsSupport
+    run Learning::Application.routes
+    
 
     # Gemfile
     gem 'url_locale'
