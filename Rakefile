@@ -18,7 +18,7 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "http://github.com/danbys/url_locale"
   gem.license = "MIT"
   gem.summary = %Q{Use Rack middleware to parse the URL and set content-lang response header}
-  gem.description = %Q{All html and xml responses passing through Rack will have content-lang header when reaching the webserver. The response body won't need a meta content-lang tag, not even when it's is cached response.}
+  gem.description = %Q{All HTML responses passing through Rack will have content-lang header when reaching the webserver. The response body won't need a meta content-lang tag, not even when it's is cached response.}
   gem.email = "dan.bystrom@gmail.com"
   gem.authors = ["Dan Byström"]
   # dependencies defined in Gemfile

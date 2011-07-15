@@ -52,7 +52,6 @@ If a locale can't be detected, fallback will be `I18n.default_locale`
 ### Rails 3.1 example
 
     $ rake middleware RAILS_ENV=development
-    use UrlLocale::Middleware
     use ActionDispatch::Static
     use Rack::Lock
     use #<ActiveSupport::Cache::Strategy::LocalCache::Middleware:0x101fefef0>
