@@ -8,31 +8,45 @@ module UrlLocale
     end
 
     # Returns a Regexp to extract the locale from +request.host+
-    def subdomain_locales
-      @@subdomain_locales ||= Regexp.new "(^|\.)(#{translations*'|'})\."
-    end
+    # def subdomain_locales
+    #   @@subdomain_locales ||= Regexp.new "(^|\.)(#{translations*'|'})\."
+    # end
 
     # Returns a Regexp to extract the locale from +request.path+
     def path_locales
       @@path_locales ||= Regexp.new "^\/(#{translations*'|'})(\/|$)"
     end
     
-    def host_mode
-      @@mode = :host
-    end
+    # def host_mode
+    #   @@mode = :host
+    # end
+    # 
+    # def mode
+    #   @@mode ||= :path
+    # end
     
-    def mode
-      @@mode ||= :path
+    def host_locales
+      @@host_locales ||= begin
+        config_fpath = File.join Rails.root, 'config', 'url_locale.yml'
+        result = {}
+        if File.exist? config_fpath
+          YAML::load_file(config_fpath).each do |locale, hosts|
+            for host in hosts
+              result[host] = locale.underscore
+            end
+          end
+        end
+        result
+      end
     end
     
     def detect request
       if translations.present?
-        if mode == :path
-          path_locales.match(request.path).try :[], 1          
-        else
-          subdomain_locales.match(request.host).try :[], 2
-        end
-      end || I18n.default_locale.to_s
+        host_url = request.url.split(request.host_with_port).first + request.host_with_port
+        host_locales[host_url] ||
+          path_locales.match(request.path).try(:[], 1) || 
+          I18n.default_locale.to_s
+      end
     end
   end
 end

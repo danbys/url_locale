@@ -8,35 +8,40 @@ Rack middleware parses the URL and sets the response header _content-language_ a
 
 ## Detect URL locale
 
-The gem will look for `I18n.available_locales` in `request.host` or `request.path`. In Path mode which is the default mode, `locale` will be parsed from the path. In Host mode `locale` will be parsed from the host string.
+The gem will parse `request.url` for `I18n.available_locales` in the following order:
 
-### Path mode examples
-    
-    I18n.default_locale => :en
-    I18n.available_locales => [:sv, :pt]
-    
-    http://example.com                        => "en"
-    http://sv.example.com                     => "en"
-    http://www.example.com/about              => "en"
-    http://www.example.com/pt/em              => "pt"
-    http://example.com/sv/om                  => "sv"
-    http://example.com/fr/sur                 => "en" # fallback
+1. `request.url` listed in `config/url_locale.yml`?
+2. `request.path` starts with `I18n.available_locales`
+3. `I18n.default_locale`
 
-If a locale can't be detected, fallback will be `I18n.default_locale`
 
-### Host mode examples
+## Example
 
-    I18n.default_locale => :en
-    I18n.available_locales => [:sv, :pt]
-    
-    http://example.com                        => "en"
-    http://sv.example.com                     => "sv"
-    http://www.example.com/pt/em              => "en"
-    http://fr.example.com/sur                 => "en" # fallback
-    http://example.com/sv/sur                 => "en"
-    http://sv.example.com/pt/em               => "sv" 
-    http://sv.mobile.example.com             => "sv"
-    http://modile.sv.example.com             => "en" # fallback
+```yaml
+# config/url_locale.yml
+en:
+  - http://localehost:3000
+  - http://example.com
+sv:
+  - http://localehost:3001
+  - http://example.se
+```
+```
+I18n.default_locale => :en
+I18n.available_locales => [:en, :sv]
+
+http://example.com                        => "en"
+http://sv.example.com                     => "en" # fallback
+http://example.se/about                   => "sv"
+http://example.com/sv/om                  => "en"
+http://www.example.com/sv/om              => "sv" # parse path
+
+http://localhost:3000                     => "en"
+http://sv.localhost:3000                  => "en" # fallback
+http://localhost:3001/about               => "sv"
+http://localhost:3000/sv/om               => "en"
+http://localhost:3002/sv/om              => "sv" # parse path
+```
 
 If a locale can't be detected, fallback will be `I18n.default_locale`
 
@@ -46,7 +51,7 @@ If a locale can't be detected, fallback will be `I18n.default_locale`
 2. Notice the order of the middleware for each environment
 3. Add `gem 'url_locale'` to Gemfile
 4. Insert `UrlLocale::Middleware` as the first middleware in the Rack middleware stack
-5. (optional) Configure - Change to Host mode
+5. (optional) create `config/url_locale`
 6. Add before filter in application to set locale
 
 ### Rails 3.1 example
@@ -108,8 +113,13 @@ If a locale can't be detected, fallback will be `I18n.default_locale`
     # config/environments/production.rb
     config.middleware.insert_before "Rack::Cache", UrlLocale::Middleware
     
-    # config/initializers/url_locale.rb (optional configuration file)
-    UrlLocale.host_mode # comment out this line to run Path mode
+    # config/url_locale.yml (optional configuration file)
+    en:
+      - http://localehost:3000
+      - http://example.com
+    sv:
+      - http://localehost:3001
+      - http://example.se
     
     # app/controllers/application_controller.rb
     before_filter :set_locale
@@ -123,7 +133,6 @@ If a locale can't be detected, fallback will be `I18n.default_locale`
 There is room for improvement for this gem
 
 - Easier installation
-- Improved parsing modes
 - Other ideas?
 
 If url_locale gets more then 1000 downloads, further development might be worth the effort :)
