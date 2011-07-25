@@ -17,7 +17,7 @@ The gem will parse `request.url` for `I18n.available_locales` in the following o
 
 ## Example
 
-```yaml
+```yml
 # config/url_locale.yml
 en:
   - http://localehost:3000
