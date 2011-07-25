@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{url_locale}
-  s.version = "0.1.0"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Dan Bystr\303\266m"]
-  s.date = %q{2011-07-14}
-  s.description = %q{All html and xml responses passing through Rack will have content-lang header when reaching the webserver. The response body won't need a meta content-lang tag, not even when it's is cached response.}
+  s.date = %q{2011-07-25}
+  s.description = %q{All HTML responses passing through Rack will have content-lang header when reaching the webserver. The response body won't need a meta content-lang tag, not even when it's is cached response.}
   s.email = %q{dan.bystrom@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -27,7 +27,8 @@ Gem::Specification.new do |s|
     "lib/url_locale.rb",
     "lib/url_locale/middleware.rb",
     "test/helper.rb",
-    "test/test_url_locale.rb"
+    "test/test_url_locale.rb",
+    "url_locale.gemspec"
   ]
   s.homepage = %q{http://github.com/danbys/url_locale}
   s.licenses = ["MIT"]
