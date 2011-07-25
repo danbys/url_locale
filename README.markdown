@@ -51,7 +51,7 @@ If a locale can't be detected, fallback will be `I18n.default_locale`
 2. Notice the order of the middleware for each environment
 3. Add `gem 'url_locale'` to Gemfile
 4. Insert `UrlLocale::Middleware` as the first middleware in the Rack middleware stack
-5. (optional) create `config/url_locale`
+5. (optional) create `config/url_locale.yml`
 6. Add before filter in application to set locale
 
 ### Rails 3.1 example
